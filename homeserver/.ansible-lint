@@ -1,0 +1,3 @@
+---
+skip-list:
+  - containers/templates/compose.yml

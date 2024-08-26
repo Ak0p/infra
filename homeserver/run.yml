@@ -1,0 +1,42 @@
+---
+#
+# Tasks and roles for all hosts
+#
+- hosts: all
+  gather_facts: true
+
+  pre_tasks:
+      - import_tasks: tasks/open_firewall_port.yml
+      # - ansible.builtin.import_tasks: tasks/change_ssh_port.yml
+        tags:
+            - always
+            - port
+
+
+  # tasks:
+  #     - import_tasks: tasks/change_ssh_port.yml
+  #       tags:
+  #           - always
+  #           - port
+        
+  become: yes
+
+  roles:
+      #
+      # Basics
+      #
+      - role: system
+        tags:
+            - system
+
+      - role: geerlingguy.security
+        tags:
+            - security
+
+      - role: geerlingguy.docker
+        tags:
+            - docker
+
+      - name: containers
+        tags:
+          - containers

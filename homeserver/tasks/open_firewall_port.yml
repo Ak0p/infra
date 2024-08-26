@@ -1,0 +1,11 @@
+---
+- name: Open Alternative SSH port
+  ansible.posix.firewalld:
+    port: "{{ansible_port}}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: yes
+    zone: FedoraServer
+  become: true
+    
+

@@ -1,0 +1,2 @@
+[home]
+homeserver ansible_host=192.168.100.9 ansible_user=vexlo ansible_connection=ssh ansible_ssh_private_key_file=/home/andrei/.ssh/homesrv
