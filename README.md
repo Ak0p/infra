@@ -25,7 +25,7 @@ Create a new proxy entry in NPM for every service you need. In this case the con
   
 ## Security
 
-The config uses the builting ansible vault module to store all sensitive data in `group_vars/all/vault.yml`.  
+The config uses the builtin ansible vault module to store all sensitive data in `group_vars/all/vault.yml`.  
   
 I have created other visible variables in `group_vars/all/vars.yml` and `roles/containers/vars/main.yml` which point to the encrypted ones in the file mentioned above. You will **need** to create mirror variables inside the vault for each variable.  
   
@@ -35,7 +35,7 @@ Inside the Cloudflare dashboard I recommend setting the SSL/TLS policy to **Full
 
 ## Docker Containers
 
-I am using Nginx Proxy Manager to route traffic to my services containers and so I created a Docker network `proxies` which is ideally to be used by any container which is to be exposed to the outside network.   
+I am using Nginx Proxy Manager to route traffic to my services containers and so I created a Docker network `proxies` for the client containers to use to connect to NPM.   
 As for the list of services I have provided: 
   - nextcloud
   - portainer
