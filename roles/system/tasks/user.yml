@@ -1,0 +1,16 @@
+---
+- name: Copy the public SSH key
+  ansible.posix.authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', ssh_public_key) }}"
+
+- name: Suppress login messages
+  file:
+    name: /home/{{ username }}/.hushlogin
+    mode: '0644'
+    state: touch
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    modification_time: preserve
+    access_time: preserve

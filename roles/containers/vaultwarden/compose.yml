@@ -1,0 +1,15 @@
+networks:
+  proxies:
+    name: nginxproxymanager_proxies
+    external: true
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    volumes:
+      - "{{docker_dir}}/vaultwarden/data:/data"
+    ports:
+      - 8443:80
+    networks:
+      - proxies

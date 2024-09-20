@@ -1,0 +1,24 @@
+{
+    "cloudflare": [
+        {
+            "authentication": {
+                "api_token": "{{ cloudflare_token }}"
+            },
+            "zone_id": "{{ main_zone_id }}",
+            "subdomains": [
+                {
+                    "name": "vpn",
+                    "proxied": true
+                },
+                {
+                    "name": "nextcloud",
+                    "proxied": true
+                },
+                {
+                    "name": "vwdn",
+                    "proxied": true
+                }
+            ]
+        }
+    ]
+}

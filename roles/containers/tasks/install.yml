@@ -1,0 +1,41 @@
+- name: Make sure that the docker folders exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+    mode: '0644'
+  loop:
+    - "{{ docker_compose_dir }}"
+    - "{{ docker_dir }}"
+
+- name: Create service-specific directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+    mode: '0644'
+  loop: "{{ services }}"
+
+- name: Copy cloudflareddns config file
+  ansible.builtin.template:
+    src: "templates/config.json"
+    dest: "{{ docker_dir }}/ddclient/config.json"
+    mode: '0644'
+
+- name: Copy the compose file
+  ansible.builtin.template:
+    src: "{{ item }}/compose.yml"
+    dest: "{{ docker_compose_dir }}/{{ item }}/compose.yml"
+    mode: '0644'
+  vars:
+    app_cidr: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='cidr') | first) | default('') }}"
+    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
+  loop: "{{ services }}"
+
+- name: Docker-compose up
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}/{{ item }}"
+    docker_cli: "/usr/bin/docker"
+  loop: "{{ services }}"

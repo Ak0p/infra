@@ -1,0 +1,9 @@
+---
+nextcloud_port: 11000
+mysqlpassword: "{{ vaultmysqlpassword }}"
+mysqlrootpassword: "{{ vaultmysqlrootpassword }}"
+mysqluser: nextcloud
+mysqldb: nextcloud
+cloudflare_token: "{{ vault_cloudflare_token }}"
+main_zone_id: "{{ vault_main_zone_id }}"
+vpn_url: "{{ vault_vpn_url }}"

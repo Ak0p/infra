@@ -1,0 +1,7 @@
+---
+  roles:
+    - name: ansible.posix
+    - name: community.docker
+    - name: geerlingguy.security
+    - name: geerlingguy.docker
+    - name: geerlingguy.repo-epel
