@@ -1,120 +1,45 @@
-#
-# Misc
-#
+# Vars for the entire project
 hostname: '{{ inventory_hostname }}'
-
-timezone: Europe/Bucharest
-
-ntp_timezone: '{{ timezone }}'
-
+timezone: Europe/Athens
 locale: en_US.UTF-8
-
 keyboard_layout: us
-
-username: vexlo
-
+username: "{{ vault_username }}"
+host_ip: "{{ vault_host_ip }}"
 shell: /usr/bin/bash
-
 # dotfiles_repo: https://github.com/ak0p/dotfiles
-
 guid: 1000
-
-#
-# Networking
-# 
-
-ansible_port: 22
+ansible_port: 49872
+security_ssh_port: 49872
+ssh_public_key: "{{ vault_ssh_public_key }}"
+ssh_private_key: "{{ vault_ssh_private_key }}"
 
 networks:
   - name: lan
-    cidr: 192.168.100.0/24
-    base: 192.168.100
-    # interface: ens18
-    # tailscale: yes # whether the subnet should be exposed to other Tailscale nodes
-  # - name: app
-  #   cidr: 10.0.0.0/24
-  #   base: 10.0.0
-  #   tailscale: yes
-  # - name: iot
-  #   cidr: 192.168.32.0/24
-  #   base: 192.168.32
-  #   tailscale: yes
+    cidr: 192.168.1.0/24
+    base: 192.168.1
+  - name: app
+    cidr: 10.0.0.0/24
+    base: 10.0.0
 
-#
-# Docker apps
-#
-#
 docker_dir: /opt/docker/data
-
 docker_compose_dir: /opt/docker/compose
 
 services:
+  - nginxproxymanager
   - nextcloud
   - portainer
-  - nginxproxymanager
   # - photoprism
   - cloudflareddns
   - vaultwarden
-  # - wireguard
-  
+  - wireguard
 
-#
-# Packages
-#
 extra_packages:
   - iperf3
   - speedtest-cli
   - htop
-  - stow
-  - exa
   - git
-  - neofetch
   - neovim
   - tmux
-  - mosh
-  - rsync
-  - iotop
-  - ncdu
-
-#
-# Email credentials (for notifications)
-#
-
-# email: moe@notthebe.ee
-
-# email_login: '{{ email }}'
-
-# email_smtp_host: smtp.mailbox.org
-
-# email_smtp_port: 465
-
-# email_smtp_port_startls: 587
-
-# # MSMTP
-# msmtp_accounts:
-#     - account: mailbox
-#       host: '{{ email_smtp_host }}'
-#       port: '{{ email_smtp_port_startls }}'
-#       auth: 'on'
-#       from: '{{ email }}'
-#       user: '{{ email }}'
-#       password: '{{ email_password }}'
-
-# msmtp_default_account: 'mailbox'
-
-# msmtp_alias_default: '{{ email }}'
-
-# #
-# # SSH (geerlingguy.security)
-# #
-security_ssh_port: 46193
-
-security_sudoers_passwordless: ['{{ username }}']
-
-# security_autoupdate_reboot: true
-
-# security_autoupdate_mail_to: '{{ email }}'
-
-# security_autoupdate_reboot_time: '23:00'
-
-# security_autoupdate_mail_on_error: false
+  - fail2ban
+  - lm_sensors
+  - powertop

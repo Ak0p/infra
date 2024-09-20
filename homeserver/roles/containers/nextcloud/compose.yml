@@ -1,0 +1,42 @@
+volumes:
+  db:
+
+networks:
+  proxies:
+    name: nginxproxymanager_proxies
+    external: true
+  backend:
+
+services:
+  db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=mqsqldb
+      - MYSQL_USER=mqsqluser
+      - MYSQL_PASSWORD="{{ mysqlpassword }}"
+      - MYSQL_ROOT_PASSWORD="{{ mysqlrootpassword }}"
+      - PUID=109
+      - PGID=65534
+    networks:
+      - backend
+
+  app:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    links:
+      - db
+    volumes:
+      - "{{docker_dir}}/nextcloud/data:/var/www/html"
+    environment:
+      - TZ=Etc/UTC
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=mqsqldb
+      - MYSQL_USER=mqsqluser
+      - MYSQL_PASSWORD="{{ mysqlpassword }}"
+    networks:
+      - backend
+      - proxies

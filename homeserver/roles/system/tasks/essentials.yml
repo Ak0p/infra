@@ -1,9 +1,10 @@
 ---
-- name: Update and upgrade packages
-  ansible.builtin.dnf:
-    update_cache: true
-    name: "*"
-    state: latest
+
+# - name: Update and upgrade packages
+#   ansible.builtin.dnf:
+#     update_cache: true
+#     name: "*"
+#     state: present
 
 - name: Check if reboot required
   ansible.builtin.stat:
@@ -27,15 +28,47 @@
 - name: Replace the hostname entry with our own
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    insertafter: ^127\.0\.0\.1 *localhost
+    insertafter: "^127.0.0.1 *localhost"
     line: "127.0.0.1 {{ inventory_hostname }}"
     owner: root
     group: root
     mode: '0644'
 
-# - name: Disable cron e-mail notifications
-#   cron:
-#     name: MAILTO
-#     user: root
-#     env: yes
-#     job: ""
+- name: Open HTTPS Port
+  ansible.posix.firewalld:
+    port: "443/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: FedoraServer
+
+- name: Open Wireguard Port
+  ansible.posix.firewalld:
+    port: "51280/udp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: FedoraServer
+
+- name: Do not suspend when lid is closed no power
+  ansible.builtin.lineinfile:
+    path: /usr/lib/systemd/logind.conf
+    regexp: "^#HandleLidSwitch=suspend"
+    line: "HandleLidSwitch=ignore"
+    backup: true
+
+- name: Do not suspend when lid is closed no power
+  ansible.builtin.lineinfile:
+    path: /usr/lib/systemd/logind.conf
+    regexp: "^#HandleLidSwitchExternalPower=suspend"
+    line: "HandleLidSwitchExternalPower=ignore"
+    backup: true
+
+- name: Copy logind.conf to /etc/systemd/
+  ansible.builtin.copy:
+    remote_src: true
+    src: /usr/lib/systemd/logind.conf
+    dest: /etc/systemd/
+    owner: root
+    group: root
+    mode: '0644'

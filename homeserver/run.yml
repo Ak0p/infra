@@ -1,42 +1,24 @@
 ---
-#
-# Tasks and roles for all hosts
-#
-- hosts: all
+# Playbook run file
+- name: Server Config
+  hosts: home
   gather_facts: true
-
-  pre_tasks:
-      - import_tasks: tasks/open_firewall_port.yml
-      # - ansible.builtin.import_tasks: tasks/change_ssh_port.yml
-        tags:
-            - always
-            - port
-
-
-  # tasks:
-  #     - import_tasks: tasks/change_ssh_port.yml
-  #       tags:
-  #           - always
-  #           - port
-        
-  become: yes
-
+  become: true
   roles:
-      #
-      # Basics
-      #
-      - role: system
-        tags:
-            - system
+    - role: system
+      tags:
+        - system
 
-      - role: geerlingguy.security
-        tags:
-            - security
+    - role: geerlingguy.docker
+      tags:
+        - docker
 
-      - role: geerlingguy.docker
-        tags:
-            - docker
+    # - role: geerlingguy.repo-epel
 
-      - name: containers
-        tags:
-          - containers
+    - role: geerlingguy.security
+      tags:
+        - security
+
+    - role: containers
+      tags:
+        - containers
