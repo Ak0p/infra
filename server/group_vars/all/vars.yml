@@ -1,0 +1,36 @@
+# Vars for the entire project
+hostname: '{{ inventory_hostname }}'
+timezone: Europe/Athens
+locale: en_US.UTF-8
+keyboard_layout: us
+username: "{{ vault_username }}"
+host_ip: "{{ vault_host_ip }}"
+shell: /usr/bin/bash
+guid: 1000
+ansible_port: 22
+security_ssh_port: 22
+ssh_public_key: "{{ vault_ssh_public_key }}"
+ssh_private_key: "{{ vault_ssh_private_key }}"
+
+networks:
+  - name: lan
+    cidr: 192.168.1.0/24
+    base: 192.168.1
+  - name: app
+    cidr: 10.0.0.0/24
+    base: 10.0.0
+
+docker_dir: "/home/{{ username }}/docker/data"
+docker_compose_dir: "/home/{{ username }}/docker/compose"
+media_dir: "/home/valen/data/Media/"
+extra_packages:
+  - iperf3
+  # - speedtest-cli
+  - htop
+  - git
+  - tmux
+  - fail2ban
+  - lm_sensors
+  - powertop
+  - wireguard-tools
+

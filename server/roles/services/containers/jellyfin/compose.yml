@@ -1,0 +1,20 @@
+networks:
+  proxies:
+    name: nginxproxymanager_proxies
+    external: true
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - "{{ docker_dir }}/jellyfin/config:/config"
+      - "{{ media_dir }}/tvshows:/data/tvshows"
+      - "{{ media_dir }}/movies/movies:/data/movies"
+    
+    restart: unless-stopped
+    networks:
+      - proxies

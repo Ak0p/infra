@@ -1,0 +1,58 @@
+volumes:
+  db:
+
+networks:
+  proxy:
+    name: proxy
+    external: true
+  backend:
+
+services:
+  db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE={{ nextcloud_mysqluser }}
+      - MYSQL_USER={{ nextcloud_mysqluser }}
+      - MYSQL_PASSWORD={{ vault_nextclouddb_passwd }}
+      - MYSQL_ROOT_PASSWORD={{ vault_nextclouddb_rootpasswd }}
+      - PUID=109
+      - PGID=65534
+    networks:
+      - backend
+
+  app:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    links:
+      - db
+    volumes:
+      - "{{ docker_dir }}/nextcloud/data:/var/www/html"
+    environment:
+      - TZ=Etc/UTC
+      - MYSQL_HOST={{ nextcloud_mysqldbhost }}
+      - MYSQL_DATABASE={{ nextcloud_mysqluser }}
+      - MYSQL_USER={{ nextcloud_mysqluser }}
+      - MYSQL_PASSWORD={{ vault_nextclouddb_passwd }}
+    networks:
+      - backend
+      - proxy
+    labels:
+    - "traefik.enable=true"
+    - "traefik.docker.network=proxy"
+    - "traefik.http.routers.nextcloud-secure.entrypoints=https"
+    - "traefik.http.routers.nextcloud-secure.rule=Host(`{{ nc_url }}`)"
+    - "traefik.http.routers.nextcloud-secure.middlewares=nextcloud_redirectregex@docker"
+    - "traefik.http.middlewares.nc-header.headers.customFrameOptionsValue=SAMEORIGIN"
+    - "traefik.http.middlewares.nc-header.headers.customResponseHeaders.Strict-Transport-Security=15552000"
+    - "traefik.http.middlewares.nc-rep.redirectregex.permanent=true"
+    - "traefik.http.middlewares.nc-rep.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav"
+    - "traefik.http.middlewares.nc-rep.redirectregex.replacement=https://$${1}/remote.php/dav"
+    - "traefik.http.routers.nextcloud-secure.middlewares=nc-rep,nc-header"
+    - "traefik.http.services.nextcloud-secure.loadbalancer.passHostHeader=true"
+    - "traefik.http.routers.nextcloud-secure.tls=true"
+    - "traefik.http.routers.nextcloud-secure.tls.certresolver=cloudflare"
+    - "traefik.http.services.nextcloud-secure.loadbalancer.server.port=80"

@@ -1,0 +1,27 @@
+---
+# Playbook run file
+- name: Server Config
+  hosts: home
+  gather_facts: true
+  become: true
+  roles:
+
+    # - role: geerlingguy.repo-epel
+    #   tags:
+    #     - repos
+    # - role: system
+    #   tags:
+    #     - system
+
+    - role: geerlingguy.docker
+      tags:
+        - docker
+
+
+    - role: geerlingguy.security
+      tags:
+        - security
+
+    - role: containers
+      tags:
+        - containers

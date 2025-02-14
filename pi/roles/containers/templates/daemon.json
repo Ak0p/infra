@@ -1,0 +1,5 @@
+// Config IPV6 Docker
+// {
+//     "ipv6": true,
+//     "fixed-cidr-v6":
+// }
