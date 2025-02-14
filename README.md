@@ -5,7 +5,7 @@ This config aims to create a secure self hosted environment by using Cloudflare 
    
 It uses Docker compose to create the containers for the services which are to be hosted on the machine.  
   
-The target device is a laptop running Fedora Server.  
+The target OS is RHEL/Fedora based.   
   
 
 ## Structure  
