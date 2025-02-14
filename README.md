@@ -3,7 +3,7 @@ A simple home lab config, heavily inspired from [this repo](https://github.com/n
 
 This config aims to create a secure self hosted environment by using Cloudflare as an outside reverse proxy and Nginx Proxy Manager as an inside reverse proxy.
    
-It uses docker compose to create the containers for the services which are to be hosted on the machine.  
+It uses Docker compose to create the containers for the services which are to be hosted on the machine.  
   
 The target device is a laptop running Fedora Server.  
   
@@ -31,7 +31,7 @@ Since Traefik is using Let's Encrypt certificates I recommend setting the SSL/TL
 
 ## Docker Containers
 
-I created a special docker network **proxy** which is shared by all publicly exposed services and Traefik.  
+I created a special Docker network `proxy` which is shared by all publicly exposed services and Traefik.  
 
 Any new service will need to be added to this network in order for Traefik to work.  
 
