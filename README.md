@@ -1,7 +1,7 @@
 # Home Lab Ansible Config
 A simple home lab config, heavily inspired from [this repo](https://github.com/notthebee/infra).
 
-This config aims to create a secure self hosted environment by using Cloudflare as an outside reverse proxy and Nginx Proxy Manager as an inside reverse proxy.
+This config aims to create a secure self hosted environment.
    
 It uses Docker compose to create the containers for the services which are to be hosted on the machine.  
   
