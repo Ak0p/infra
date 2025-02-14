@@ -35,4 +35,13 @@ I created a special Docker network `proxy` which is shared by all publicly expos
 
 Any new service will need to be added to this network in order for Traefik to work.  
 
-If a container needs to be part of another network as well the following label will need to be added: `traefik.docker.network=proxy`.
+If a container needs to be part of another network as well the following label will need to be added: `traefik.docker.network=proxy`.  
+
+## Backup  
+
+Restic is set up to back up all docker containers that are using bindings into the `restic_backup_location` directory.  
+
+## Container Updates  
+
+Watchtower is set up to autoupdate all containers but CloudflareDDNS.  
+
