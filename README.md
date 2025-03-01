@@ -45,3 +45,8 @@ Restic is set up to back up all docker containers that are using bindings into t
 
 Watchtower is set up to autoupdate all containers but CloudflareDDNS.  
 
+## TODO
+
+* Segment containers role per stack.
+* Enable **Proxmox** support to harden security and further segment traffic.
+
