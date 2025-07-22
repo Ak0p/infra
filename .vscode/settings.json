@@ -1,6 +1,0 @@
-{
-    "ansible.python.interpreterPath": "/bin/python",
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": "file:///home/andrei/Config/infrastructure/roles/containers/tasks/install.yml"
-    }
-}
