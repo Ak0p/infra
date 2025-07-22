@@ -1,0 +1,25 @@
+services:
+  vault:
+    image: hashicorp/vault:1.18
+    container_name: vault
+    cap_add:
+      - IPC_LOCK  # Lock memory to prevent sensitive data from swapping to disk
+    environment:
+      # VAULT_DEV_ROOT_TOKEN_ID: myroot  # Root token for dev mode
+      VAULT_ADDR: http://127.0.0.1:8200  # Set the Vault address
+      VAULT_API_ADDR: http://127.0.0.1:8200  # Set the Vault address
+
+    ports:
+      - "8200:8200"  # Expose Vault on port 8200
+    # command: server
+    volumes:
+      - vault-data:/vault/file  # For future use, persistent storage in production
+      - ./config:/vault/config
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    entrypoint: vault server -config /vault/config/config.hcl
+volumes:
+  vault-data:

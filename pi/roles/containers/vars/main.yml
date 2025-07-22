@@ -1,9 +1,0 @@
----
-
-services:
-  - wireguard
-  - portainer
-  - pihole
-  - uptime-kuma
-
-vpn_url: "{{ vault_vpn_url }}"

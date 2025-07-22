@@ -1,0 +1,18 @@
+---
+
+disabled_services:
+  - traefik
+  - authentik
+  - restic
+  - pihole
+
+vpn_url: "{{ vault_vpn_url }}"
+
+
+# nextcloud
+nextcloud_port: 11000
+nextcloud_mysqluser: nextcloud
+nextcloud_mysqldbhost: db
+
+# restic
+restic_backup_location: "/home/{{ username }}/restic"

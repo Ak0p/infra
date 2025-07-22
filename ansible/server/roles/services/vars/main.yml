@@ -1,0 +1,21 @@
+---
+disabled_services:
+  # - traefik
+  - mailserver
+  - firefly
+  - arr
+  - wireguard
+  # - authentik
+  - nginxproxymanager
+  - authelia
+
+
+
+# nextcloud
+nextcloud_port: 11000
+nextcloud_mysqluser: nextcloud
+nextcloud_mysqldbhost: db
+
+# restic
+restic_backup_location: "/home/{{ username }}/restic"
+library: "/home/{{ username }}/library"

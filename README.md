@@ -1,11 +1,11 @@
 # Home Lab Ansible Config
 A simple home lab config, heavily inspired from [this repo](https://github.com/notthebee/infra).
 
-This config aims to create a secure self hosted environment.
+This config aims to create a secure self hosted environment by using Cloudflare as an outside reverse proxy and Nginx Proxy Manager as an inside reverse proxy.
    
 It uses Docker compose to create the containers for the services which are to be hosted on the machine.  
   
-The target OS is RHEL/Fedora based.   
+The target device is a laptop running Fedora Server.  
   
 
 ## Structure  
@@ -35,18 +35,4 @@ I created a special Docker network `proxy` which is shared by all publicly expos
 
 Any new service will need to be added to this network in order for Traefik to work.  
 
-If a container needs to be part of another network as well the following label will need to be added: `traefik.docker.network=proxy`.  
-
-## Backup  
-
-Restic is set up to back up all docker containers that are using bindings into the `restic_backup_location` directory.  
-
-## Container Updates  
-
-Watchtower is set up to autoupdate all containers but CloudflareDDNS.  
-
-## TODO
-
-* Segment containers role per stack.
-* Enable **Proxmox** support to harden security and further segment traffic.
-
+If a container needs to be part of another network as well the following label will need to be added: `traefik.docker.network=proxy`.

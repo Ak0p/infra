@@ -1,0 +1,7 @@
+**/vault.yml
+**/.*env
+.terraform
+*terraform.tfstate*
+*.pub
+.remote-backend
+config.hcl
