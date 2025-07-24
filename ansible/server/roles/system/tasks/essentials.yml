@@ -42,21 +42,21 @@
     state: enabled
     zone: public
 
-- name: Open NPM Port
-  ansible.posix.firewalld:
-    port: "81/tcp"
-    permanent: true
-    immediate: true
-    state: enabled
-    zone: public
+# - name: Open NPM Port
+#   ansible.posix.firewalld:
+#     port: "81/tcp"
+#     permanent: true
+#     immediate: true
+#     state: enabled
+#     zone: public
 
-- name: Open Wireguard Port
-  ansible.posix.firewalld:
-    port: "51280/udp"
-    permanent: true
-    immediate: true
-    state: enabled
-    zone: public
+# - name: Open Wireguard Port
+#   ansible.posix.firewalld:
+#     port: "51280/udp"
+#     permanent: true
+#     immediate: true
+#     state: enabled
+#     zone: public
 
 # - name: Do not suspend when lid is closed no power
 #   ansible.builtin.lineinfile:

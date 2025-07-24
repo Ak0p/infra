@@ -7,15 +7,28 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.80.0"
     }
+    ct = {
+      source  = "poseidon/ct"
+      version = "0.13.0"
+    }
+
   }
 }
 
 provider "proxmox" {
-  endpoint  = var.pm_api_url
-  api_token = "root@pam!terraform2=${data.vault_generic_secret.pm_api_token.data["pm_api_token"]}"
-  insecure  = true
-  username  = "root@pam"
-  # password  = data.vault_generic_secret.pm_passwd.data["pm_passwd"]
+  endpoint = var.pm_api_url
+  # api_token = "root@pam!terraform2=${data.vault_generic_secret.pm_creds.data["pm_api_token"]}"
+  insecure = true
+  username = "root@pam"
+  password = data.vault_generic_secret.pm_creds.data["pm_passwd"]
+
+  ssh {
+    agent    = true
+    username = "root"
+    password = data.vault_generic_secret.pm_creds.data["pm_passwd"]
+  }
+
+
 }
 
 provider "vault" {
@@ -24,9 +37,4 @@ provider "vault" {
 }
 
 
-data "vault_generic_secret" "pm_api_token" {
-  path = "secret/proxmox"
-}
-data "vault_generic_secret" "pm_passwd" {
-  path = "secret/proxmox_pass"
-}
+

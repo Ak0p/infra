@@ -2,20 +2,35 @@ data "local_file" "ssh_public_key" {
   filename = "homesrv.pub"
 }
 
+data "ct_config" "coreos1_vm_ignition" {
+  strict = true
+  content = templatefile("butane/coreos1.yml.tftpl", {
+    ssh_admin_username   = data.vault_generic_secret.coreos1_creds.data["user"]
+    ssh_admin_public_key = data.local_file.ssh_public_key.content
+    hostname             = "nobla"
+    password_hash        = base64encode(data.vault_generic_secret.coreos1_creds.data["passwd"])
+  })
+}
+
 # VM Setup
 
 # Container Host VM
 
 resource "proxmox_virtual_environment_vm" "coreos1" {
+
   name        = "coreos1"
   description = "Docker host VM"
   tags        = ["terraform"]
 
   node_name = "proxmox1"
   vm_id     = 102
+  machine   = "q35"
 
   stop_on_destroy = true
 
+  agent {
+    enabled = true
+  }
   cpu {
     cores = 8
     type  = "x86-64-v2-AES"
@@ -30,24 +45,46 @@ resource "proxmox_virtual_environment_vm" "coreos1" {
     datastore_id = "local-lvm"
     import_from  = "local:import/fedora-coreos-42.qemu.qcow2"
     interface    = "scsi0"
-    size         = 100
+    size         = 200
+  }
+
+  disk {
+    interface   = "virtio0"
+    import_from = "lvm-pv-uuid-Dcm2b3-CBMm-5v8Z-hLdB-xG0R-YDsA-lI9tp9"
   }
 
   network_device {
     bridge = "vmbr0"
   }
 
+  # initialization {
+  #   user_data_file_id = "local:snippets/coreos-ignition.ign"
+  # }
 
-  initialization {
-    user_account {
-      username = "valen"
-      password = random_password.haos_vm_pass.result
-      keys     = [trimspace(data.local_file.ssh_public_key.content)]
-    }
 
-  }
+
+  kvm_arguments = "-fw_cfg 'name=opt/com.coreos/config,string=${replace(data.ct_config.coreos1_vm_ignition.rendered, ",", ",,")}'"
 
 }
+
+# resource "proxmox_virtual_environment_file" "coreos1_ignition_file" {
+
+#   depends_on     = [data.ct_config.coreos1_vm_ignition]
+#   content_type   = "snippets"
+#   datastore_id   = "local"
+#   node_name      = "proxmox1"
+#   timeout_upload = 70
+#   # file_mode    = "0700"
+
+
+#   source_raw {
+#     data      = <<-EOF
+#     ${data.ct_config.coreos1_vm_ignition.rendered}
+#     EOF
+#     file_name = "coreos-ignition.ign"
+#   }
+
+# }
 
 # Home Asissant VM
 resource "proxmox_virtual_environment_vm" "haos16" {
@@ -62,6 +99,10 @@ resource "proxmox_virtual_environment_vm" "haos16" {
 
 
   bios = "ovmf"
+
+  agent {
+    enabled = true
+  }
 
   efi_disk {
     datastore_id = "local-lvm"
@@ -138,6 +179,10 @@ output "haos_vm_pass" {
   sensitive = true
 }
 
+output "debug_ignition_config" {
+  value = data.ct_config.coreos1_vm_ignition.rendered
+  # sensitive = true # Since it contains credentials
+}
 
 # output "haos_vm_public_key" {
 #   value = tls_private_key.haos_vm_key.public_key_openssh
