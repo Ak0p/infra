@@ -25,9 +25,9 @@ I plan on using LXC's directly on the hypervisor for services that would be clas
 
 ### Provisioning and Deployment
 
-For VM and LXC provisioning I am using Terraform with the Proxmox provider. I store all sensitive data in a Hashicorp Vault container locally.
+For VM and LXC provisioning I use Terraform with the Proxmox provider. I store all sensitive data in a Hashicorp Vault container locally.
 
-For container deployments and additional configurations I am using Ansible. All sensitive data is stored in an Ansible Vault encrypted file.
+For container deployments and additional configurations I use Ansible. All sensitive data is stored in an Ansible Vault encrypted file.
 
 I plan on using a CI/CD tool such as GitHub Actions in order to run the steps of deployment automatically.
 
