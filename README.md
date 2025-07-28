@@ -15,7 +15,7 @@ I also aim to make all configurations reproducible by leveraging as many IaC too
 
 I run Proxmox VE on multiple nodes in order to balance the load and to use the High Availability feature (TODO).
 
-The reason I chose Proxmox over Kubernetes is because I wanted to run multiple VM's and for security when it matters.
+The reason I chose Proxmox over Kubernetes is because I wanted to run multiple VM's.
 
 ### Containerization
 
