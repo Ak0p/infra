@@ -1,38 +1,56 @@
-# Home Lab Ansible Config
-A simple home lab config, heavily inspired from [this repo](https://github.com/notthebee/infra).
+# Home Lab Config
 
-This config aims to create a secure self hosted environment by using Cloudflare as an outside reverse proxy and Nginx Proxy Manager as an inside reverse proxy.
-   
-It uses Docker compose to create the containers for the services which are to be hosted on the machine.  
-  
-The target device is a laptop running Fedora Server.  
-  
+This repository holds all files for the configuration of all services I host at home.
 
-## Structure  
-Inside `/server` are all the services that are exposed via **Traefik** and inside `/pi` are the various monitoring containers and Wireguard.  
 
-Traefik is configured to work on the default HTTP and HTTPS ports and will automatically pick up any new services configured via **labels**.  
+## Goals
 
-For each new service a subdomain is required to be set up in order for Traefik to be able to forward the traffic to the container.  
+**With this project I aim to develop my automations skills by leveraging various technologies and best practices.**
 
-A [config file](https://github.com/timothymiller/cloudflare-ddns?tab=readme-ov-file#-example-) named `config.json` will need to be added inside the `/server/roles/services/templates/` folder for the CloudflareDDNS container to be able to set up the domains.  
-  
+I also aim to make all configurations reproducible by leveraging as many IaC tools as possible.
 
-  
-## Security
+## Tooling
 
-The config uses the builtin ansible vault module to store all sensitive data in `group_vars/all/vault.yml`.  
-  
-Sensitive information is stored inside the encrypted vault file and written into files using [ variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) and the [template](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html) module.
-  
-I am using a [security playbook](https://github.com/geerlingguy/ansible-role-security) which does a couple things like enabling disabling password login on ssh and changing the ssh port. The mentioned playbook does a lot more things so I would recommend checking it out.  
-  
-Since Traefik is using Let's Encrypt certificates I recommend setting the SSL/TLS policy to **Full (strict)** inside the Cloudflare dashboard.
+### Virtualization
 
-## Docker Containers
+I run Proxmox VE on multiple nodes in order to balance the load and to use the High Availability feature (TODO).
 
-I created a special Docker network `proxy` which is shared by all publicly exposed services and Traefik.  
+The reason I chose Proxmox over Kubernetes is because I wanted to run multiple VM's and for security when it matters.
 
-Any new service will need to be added to this network in order for Traefik to work.  
+### Containerization
 
-If a container needs to be part of another network as well the following label will need to be added: `traefik.docker.network=proxy`.
+I run my containers on a Fedora CoreOS VM using Docker because I already had an Ansible playbook for easy deployment of all services.
+
+I plan on using LXC's directly on the hypervisor for services that would be classified as essential, such as VPN and DNS.
+
+### Provisioning and Deployment
+
+For VM and LXC provisioning I am using Terraform with the Proxmox provider. I store all sensitive data in a Hashicorp Vault container locally.
+
+For container deployments and additional configurations I am using Ansible. All sensitive data is stored in an Ansible Vault encrypted file.
+
+I plan on using a CI/CD tool such as GitHub Actions in order to run the steps of deployment automatically.
+
+## Structure
+
+I run multiple virtual machines for different purposes.
+
+### Fedora CoreOS
+
+I chose CoreOS because it is reproducible and offers automatic updates.
+
+On this VM I run all services such as Nextcloud and Immich through a Traefik reverse proxy that exposes them publicly.
+
+### Home Assistant OS
+
+I run a dedicated HA VM because I intend on using addons, which can only be run on the OS version of Home Assistant, and because I plan on using the high availability feature in the future.
+
+### TrueNas (TODO)
+
+### Wireguard LXC (TODO)
+
+### CloudflareDDNS LXC (TODO)
+
+### PiHoleDNS LXC (TODO)
+
+### Monitoring Stack (TODO)

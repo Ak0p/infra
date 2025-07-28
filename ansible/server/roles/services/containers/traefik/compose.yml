@@ -15,13 +15,13 @@ services:
      # - 10000:10000 # optional
      # - 33073:33073 # optional
     environment:
+      - TZ=Europe/Bucharest
       - TRAEFIK_DASHBOARD_CREDENTIALS=${TRAEFIK_DASHBOARD_CREDENTIALS}
       # - CF_API_EMAIL=your@email.com # Cloudflare email
       - CF_DNS_API_TOKEN={{ vault_cloudflare_token }} # Cloudflare API Token
       # - CF_DNS_API_TOKEN_FILE=/run/secrets/cf-token # see https://doc.traefik.io/traefik/https/acme/#providers
       # token file is the proper way to do it
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - {{ docker_compose_dir }}/traefik/traefik.yaml:/traefik.yaml:ro
       - {{ docker_dir }}/traefik/acme.json:/acme.json

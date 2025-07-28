@@ -48,10 +48,10 @@ resource "proxmox_virtual_environment_vm" "coreos1" {
     size         = 200
   }
 
-  disk {
-    interface   = "virtio0"
-    import_from = "lvm-pv-uuid-Dcm2b3-CBMm-5v8Z-hLdB-xG0R-YDsA-lI9tp9"
-  }
+  # disk {
+  #   interface   = "virtio0"
+  #   import_from = "lvm-pv-uuid-Dcm2b3-CBMm-5v8Z-hLdB-xG0R-YDsA-lI9tp9"
+  # }
 
   network_device {
     bridge = "vmbr0"
