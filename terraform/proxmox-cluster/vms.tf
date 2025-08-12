@@ -2,13 +2,17 @@ data "local_file" "ssh_public_key" {
   filename = "homesrv.pub"
 }
 
+data "external" "yescrypt_hash" {
+  program = ["bash", "-c", "echo '{\"hash\":\"'$(mkpasswd -m yescrypt \"${data.vault_generic_secret.coreos1_creds.data["passwd"]}\")'\"}'"]
+}
+
 data "ct_config" "coreos1_vm_ignition" {
   strict = true
   content = templatefile("butane/coreos1.yml.tftpl", {
     ssh_admin_username   = data.vault_generic_secret.coreos1_creds.data["user"]
     ssh_admin_public_key = data.local_file.ssh_public_key.content
     hostname             = "nobla"
-    password_hash        = base64encode(data.vault_generic_secret.coreos1_creds.data["passwd"])
+    password_hash        = data.external.yescrypt_hash.result.hash
   })
 }
 
@@ -48,54 +52,27 @@ resource "proxmox_virtual_environment_vm" "coreos1" {
     size         = 200
   }
 
-  # disk {
-  #   interface   = "virtio0"
-  #   import_from = "lvm-pv-uuid-Dcm2b3-CBMm-5v8Z-hLdB-xG0R-YDsA-lI9tp9"
-  # }
-
   network_device {
     bridge = "vmbr0"
   }
-
-  # initialization {
-  #   user_data_file_id = "local:snippets/coreos-ignition.ign"
-  # }
-
-
 
   kvm_arguments = "-fw_cfg 'name=opt/com.coreos/config,string=${replace(data.ct_config.coreos1_vm_ignition.rendered, ",", ",,")}'"
 
 }
 
-# resource "proxmox_virtual_environment_file" "coreos1_ignition_file" {
-
-#   depends_on     = [data.ct_config.coreos1_vm_ignition]
-#   content_type   = "snippets"
-#   datastore_id   = "local"
-#   node_name      = "proxmox1"
-#   timeout_upload = 70
-#   # file_mode    = "0700"
-
-
-#   source_raw {
-#     data      = <<-EOF
-#     ${data.ct_config.coreos1_vm_ignition.rendered}
-#     EOF
-#     file_name = "coreos-ignition.ign"
-#   }
-
-# }
 
 # Home Asissant VM
 resource "proxmox_virtual_environment_vm" "haos16" {
   name            = "haos16"
   description     = "Managed by Terraform"
   tags            = ["terraform"]
-  stop_on_destroy = false
+  stop_on_destroy = true
 
 
   node_name = "proxmox1"
   vm_id     = 101
+
+
 
 
   bios = "ovmf"
@@ -141,30 +118,77 @@ resource "proxmox_virtual_environment_vm" "haos16" {
 }
 
 
-# resource "proxmox_virtual_environment_download_file" "fedora-coreos-42" {
 
-#   content_type            = "import"
-#   datastore_id            = "local"
-#   node_name               = "proxmox1"
-#   url                     = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/42.20250623.3.1/x86_64/fedora-coreos-42.20250623.3.1-qemu.x86_64.qcow2.xz"
-#   file_name               = "fedora-coreos-42.20250623.3.1-qemu.x86_64.qcow2"
-#   decompression_algorithm = "gz"
-#   checksum                = "sha256:a3176646ea2bd53d2905f7af9537938038a32d49a7e318abc3a9e3ed1ea1e0b3"
-#   checksum_algorithm      = "sha256"
 
+# TrueNAS SCALE
+
+# resource "proxmox_virtual_environment_vm" "truenas" {
+#   name            = "truenas"
+#   description     = "Managed by Terraform"
+#   tags            = ["terraform"]
+#   stop_on_destroy = false
+
+
+#   node_name = "proxmox1"
+#   vm_id     = 103
+
+
+#   bios = "ovmf"
+#   efi_disk {
+#     datastore_id = "local-lvm"
+#     type         = "4m"
+#   }
+
+#   cdrom {
+#     file_id = proxmox_virtual_environment_download_file.truenas-SCALE-25-04-2-image.id
+#   }
+
+#   agent {
+#     enabled = true
+#   }
+
+
+#   cpu {
+#     cores = 4
+#     type  = "x86-64-v2-AES"
+#   }
+
+#   memory {
+#     dedicated = 8192
+#     floating  = 8192
+#   }
+
+#   disk {
+#     datastore_id = "local-lvm"
+#     interface    = "virtio0"
+#     size         = "32"
+#     import_from  = proxmox_virtual_environment_download_file.truenas-SCALE-25-04-2-image.id
+#   }
+
+#   network_device {
+#     bridge = "vmbr0"
+#   }
+
+
+#   initialization {
+#     user_account {
+#       username = "root"
+#       password = random_password.haos_vm_pass.result
+#       keys     = [trimspace(data.local_file.ssh_public_key.content)]
+#     }
+#   }
 # }
 
 
-# resource "proxmox_virtual_environment_download_file" "haos-16_0-image" {
+# resource "proxmox_virtual_environment_download_file" "truenas-SCALE-25-04-2-image" {
 
-#   content_type            = "import"
-#   datastore_id            = "local"
-#   node_name               = "proxmox1"
-#   url                     = "https://github.com/home-assistant/operating-system/releases/download/16.0/haos_ova-16.0.qcow2.xz"
-#   file_name               = "haos_ova-16.0.qcow2"
-#   decompression_algorithm = "gz"
-#   checksum                = "sha256:24c5f30619da5ad8534d615023626361783c7436b67c06afe53b58a4ff6cd6b5"
-#   checksum_algorithm      = "sha256"
+#   content_type       = "iso"
+#   datastore_id       = "local"
+#   node_name          = "proxmox1"
+#   url                = "https://download.sys.truenas.net/TrueNAS-SCALE-Fangtooth/25.04.2/TrueNAS-SCALE-25.04.2.iso"
+#   file_name          = "TrueNAS-SCALE-25.04.2.iso"
+#   checksum           = "248635f8b2f91eebf88d37911ad934df99d1c2f5675c76caef5c86a76a2532c4"
+#   checksum_algorithm = "sha256"
 
 # }
 
@@ -187,3 +211,15 @@ output "debug_ignition_config" {
 # output "haos_vm_public_key" {
 #   value = tls_private_key.haos_vm_key.public_key_openssh
 # }
+
+
+resource "proxmox_virtual_environment_haresource" "haos_vm" {
+  depends_on = [proxmox_virtual_environment_hagroup.home]
+
+  resource_id = "vm:${proxmox_virtual_environment_vm.haos16.id}"
+  group       = proxmox_virtual_environment_hagroup.home.id
+  state       = "started"
+  comment     = "Managed by Terraform"
+
+}
+

@@ -26,6 +26,9 @@ providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
+  file:
+    filename: /ha_config.yaml
+    watch: true
   # file:
   #   filename: /config.yaml # example provided gives A+ rating https://www.ssllabs.com/ssltest/
 certificatesResolvers:

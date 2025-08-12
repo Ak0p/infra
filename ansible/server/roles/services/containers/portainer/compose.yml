@@ -1,10 +1,23 @@
+networks:
+  proxy:
+    name: proxy
+    external: true
+
 services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
-    ports:
-      - 9443:9443
+    # ports:
+    #   - 9443:9443
     volumes:
         - "{{ docker_dir }}/portainer/data:/data"
         - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.portainer-secure.entrypoints=https"
+      - "traefik.http.routers.portainer-secure.rule=Host(`portainer.coreos1.{{ domain }}`)"
+      - "traefik.http.routers.portainer-secure.tls=true"
+      - "traefik.http.routers.portainer-secure.tls.certresolver=cloudflare"
+      - "traefik.http.services.portainer-secure.loadbalancer.server.port=9443"

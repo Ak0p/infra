@@ -68,6 +68,8 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target   
+    - name: "docker.service"
+      enabled: true
 passwd:
   users:
     - name: ${ssh_admin_username}

@@ -43,7 +43,6 @@ services:
       - "traefik.http.routers.traefik-secure.tls.domains[0].main={{ domain }}"
       - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.{{ domain }}"
       - "traefik.http.routers.traefik-secure.service=api@internal"
-      - "traefik.http.routers.api.middlewares=authelia@docker"
 
 networks:
   proxy:
