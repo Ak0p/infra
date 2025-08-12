@@ -1,0 +1,8 @@
+- name: LXC Setup
+  hosts: containers
+  gather_facts: true
+  become: true
+  roles:
+    - role: lxc
+      tags:
+        - lxc

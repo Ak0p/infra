@@ -1,0 +1,5 @@
+- name: Install wg-tools
+  ansible.builtin.package:
+    name: wireguard-tools
+    state: present
+    use: auto
