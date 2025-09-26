@@ -214,12 +214,12 @@ output "debug_ignition_config" {
 
 
 resource "proxmox_virtual_environment_haresource" "haos_vm" {
-  depends_on = [proxmox_virtual_environment_hagroup.home]
+  # depends_on = [proxmox_virtual_environment_hagroup.home]
 
   resource_id = "vm:${proxmox_virtual_environment_vm.haos16.id}"
-  group       = proxmox_virtual_environment_hagroup.home.id
-  state       = "started"
-  comment     = "Managed by Terraform"
+  # group       = proxmox_virtual_environment_hagroup.home.id
+  state   = "started"
+  comment = "Managed by Terraform"
 
 }
 

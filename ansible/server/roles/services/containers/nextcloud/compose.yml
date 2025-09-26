@@ -44,7 +44,7 @@ services:
     labels:
     - "traefik.enable=true"
     - "traefik.docker.network=proxy"
-    - "traefik.http.routers.nextcloud-secure.entrypoints=https"
+    - "traefik.http.routers.nextcloud-secure.entrypoints=https-external"
     - "traefik.http.routers.nextcloud-secure.rule=Host(`{{ nc_url }}`)"
     - "traefik.http.routers.nextcloud-secure.middlewares=nextcloud_redirectregex@docker"
     # - "traefik.http.middlewares.nc-header.headers.customFrameOptionsValue=SAMEORIGIN"

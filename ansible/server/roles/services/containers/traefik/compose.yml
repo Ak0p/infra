@@ -11,7 +11,9 @@ services:
        proxy:
     ports:
       - 80:80
+      - 81:81
       - 443:443
+      - 444:444
      # - 10000:10000 # optional
      # - 33073:33073 # optional
     environment:

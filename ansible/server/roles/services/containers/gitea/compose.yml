@@ -1,0 +1,44 @@
+networks:
+  gitea:
+    external: false
+  proxy:
+    name: proxy
+    external: true
+
+volumes:
+  gitea:
+
+services:
+  server:
+    image: docker.gitea.com/gitea:1.24.5
+    container_name: gitea
+    env_file:
+      - path: .env
+    restart: always
+    networks:
+      - gitea
+      - proxy
+    volumes:
+      - gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - db
+    labels:
+    - "traefik.enable=true"
+    - "traefik.docker.network=proxy"
+    - "traefik.http.routers.gitea-secure.entrypoints=https"
+    - "traefik.http.routers.gitea-secure.rule=Host(`gitea.home.{{ domain }}`)"
+    - "traefik.http.routers.gitea-secure.tls=true"
+    - "traefik.http.routers.gitea-secure.tls.certresolver=cloudflare"
+    - "traefik.http.services.gitea-secure.loadbalancer.server.port=3000"
+
+  db:
+    image: docker.io/library/postgres:14
+    restart: always
+    env_file:
+      - path: .db.env
+    networks:
+      - gitea
+    volumes:
+      - ./postgres:/var/lib/postgresql/data

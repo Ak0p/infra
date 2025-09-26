@@ -68,7 +68,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.authentik.rule=Host(`authentik.{{ domain }}`)"
+      - "traefik.http.routers.authentik.rule=Host(`authentik.home.{{ domain }}`)"
       - "traefik.http.routers.authentik.entrypoints=https"
       - "traefik.http.routers.authentik.tls=true"
       - "traefik.http.routers.authentik.tls.certresolver=cloudflare"

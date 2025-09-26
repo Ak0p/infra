@@ -12,7 +12,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.http.routers.audiobookshelf-secure.rule=Host(`{{ audiobookshelf_url }}`)
-      - traefik.http.routers.audiobookshelf-secure.entrypoints=https
+      - traefik.http.routers.audiobookshelf-secure.entrypoints=https-external
       - traefik.http.routers.audiobookshelf-secure.tls=true
       - traefik.http.routers.audiobookshelf.service=audiobookshelf
       - traefik.http.services.audiobookshelf.loadbalancer.server.port=80

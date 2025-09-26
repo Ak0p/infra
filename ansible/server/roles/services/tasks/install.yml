@@ -68,8 +68,7 @@
     src: "templates/traefik/{{ item }}"
     dest: "{{ docker_compose_dir }}/traefik/{{ item }}"
     mode: '0644'
-  loop:
-    - traefik.yaml
+  loop: "{{ query('fileglob', 'templates/traefik/*') | map('basename') | list }}"
   when: "'traefik' in services"
 
 - name: Create acme.json if it doesn't exist

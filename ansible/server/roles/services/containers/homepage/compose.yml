@@ -14,12 +14,12 @@ services:
       - "{{ docker_compose_dir }}config:/app/config" # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: home.akop.ro # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+      HOMEPAGE_ALLOWED_HOSTS: dash.home.akop.ro # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       - "traefik.http.routers.homepage-secure.entrypoints=https"
-      - "traefik.http.routers.homepage-secure.rule=Host(`home.{{ domain }}`)"
+      - "traefik.http.routers.homepage-secure.rule=Host(`dash.home.{{ domain }}`)"
       - "traefik.http.routers.homepage-secure.tls=true"
       - "traefik.http.routers.homepage-secure.tls.certresolver=cloudflare"
       - "traefik.http.services.homepage-secure.loadbalancer.server.port=3000"

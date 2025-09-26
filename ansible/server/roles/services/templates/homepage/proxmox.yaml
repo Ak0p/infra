@@ -1,0 +1,3 @@
+url: https://proxmox.home.akop.ro:8006
+token: api@pam!homepage
+secret: "{{ vault_proxmox_homepage_secret }}"
